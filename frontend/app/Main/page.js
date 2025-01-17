@@ -1,12 +1,41 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import ActivityChart from "../components/ActivityChart";
 import Badge from "../components/Badge";
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
-  const dailySteps = 7234; // This could come from your data source
+  const [workoutData, setWorkoutData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchWorkoutData = async () => {
+      try {
+        const response = await fetch('https://irix.onrender.com/api/workout/678a165d5ea4e10812a9e603');
+        if (!response.ok) throw new Error('Failed to fetch workout data');
+        const data = await response.json();
+        setWorkoutData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWorkoutData();
+  }, []);
+
+  const calculateTotalCalories = () => {
+    if (!workoutData?.exercises) return 0;
+    return workoutData.exercises.reduce((total, exercise) => total + exercise.calories, 0);
+  };
+
+  const calculateTotalMinutes = () => {
+    if (!workoutData?.exercises) return 0;
+    return workoutData.exercises.reduce((total, exercise) => total + exercise.duration, 0);
+  };
 
   const getBadgeType = (steps) => {
     if (steps >= 15000) return "advanced";
@@ -117,14 +146,16 @@ export default function Home() {
           >
             <h2 className="font-semibold mb-4">Daily Goals</h2>
             <div className="flex items-center justify-between">
-              <div className="text-3xl font-bold text-blue-500">{dailySteps}</div>
+              <div className="text-3xl font-bold text-blue-500">
+                {isLoading ? "Loading..." : workoutData?.steps || 0}
+              </div>
               <p className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
                 steps today
               </p>
             </div>
-            {getBadgeType(dailySteps) && (
+            {!isLoading && getBadgeType(workoutData?.steps || 0) && (
               <div className="mt-4">
-                <Badge type={getBadgeType(dailySteps)} count={dailySteps} />
+                <Badge type={getBadgeType(workoutData?.steps || 0)} count={workoutData?.steps || 0} />
               </div>
             )}
           </div>
@@ -136,7 +167,9 @@ export default function Home() {
           >
             <h2 className="font-semibold mb-4">Active Minutes</h2>
             <div className="flex items-center justify-between">
-              <div className="text-3xl font-bold text-green-500">45</div>
+              <div className="text-3xl font-bold text-green-500">
+                {isLoading ? "Loading..." : calculateTotalMinutes()}
+              </div>
               <p className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
                 minutes
               </p>
@@ -150,7 +183,9 @@ export default function Home() {
           >
             <h2 className="font-semibold mb-4">Calories</h2>
             <div className="flex items-center justify-between">
-              <div className="text-3xl font-bold text-orange-500">1,248</div>
+              <div className="text-3xl font-bold text-orange-500">
+                {isLoading ? "Loading..." : calculateTotalCalories()}
+              </div>
               <p className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
                 kcal burned
               </p>

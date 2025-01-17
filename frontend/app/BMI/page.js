@@ -19,9 +19,30 @@ const Page = () => {
   const [height, setHeight] = useState('')
   const [bmi, setBmi] = useState('')
   const [bodyComposition, setBodyComposition] = useState(null)
-  
+  const [profileData, setProfileData] = useState(null)
+
   useEffect(() => {
-    // Load previous BMI on component mount
+    // Load profile data if available
+    const userId = localStorage.getItem('userId')
+    if (userId) {
+      fetch(`https://irix.onrender.com/api/profile/${userId}`)
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            setProfileData(data)
+            setWeight(data.weight)
+            setHeight(data.height)
+            // Automatically calculate BMI with profile data
+            const heightInMeters = data.height / 100
+            const bmiValue = (data.weight / (heightInMeters * heightInMeters)).toFixed(2)
+            setBmi(bmiValue)
+            calculateBodyComposition(data.weight, bmiValue)
+          }
+        })
+        .catch(console.error)
+    }
+
+    // Load previous BMI
     const storedBMI = localStorage.getItem('lastBMI')
     if (storedBMI) {
       setBmi(storedBMI)
@@ -32,6 +53,26 @@ const Page = () => {
     localStorage.setItem('lastBMI', bmiValue)
   }
 
+  const calculateBodyComposition = (weightValue, bmiValue) => {
+    const bodyFatPercentage = bmiValue < 18.5
+      ? 12
+      : bmiValue < 25
+      ? 18
+      : bmiValue < 30
+      ? 25
+      : 32
+
+    const fatMass = (weightValue * bodyFatPercentage) / 100
+    const waterMass = (weightValue * 60) / 100
+    const muscleMass = weightValue - (fatMass + waterMass)
+
+    setBodyComposition({
+      fatMass: fatMass.toFixed(2),
+      waterMass: waterMass.toFixed(2),
+      muscleMass: muscleMass.toFixed(2),
+    })
+  }
+
   const calculateComposition = (e) => {
     e.preventDefault()
     if (weight && height) {
@@ -39,25 +80,7 @@ const Page = () => {
       const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2)
       setBmi(bmiValue)
       saveBMIToStorage(bmiValue)
-
-      // Estimate body composition (generalized)
-      const bodyFatPercentage = bmiValue < 18.5
-        ? 12 // Assumption for underweight
-        : bmiValue < 25
-        ? 18 // Normal weight
-        : bmiValue < 30
-        ? 25 // Overweight
-        : 32 // Obese
-
-      const fatMass = (weight * bodyFatPercentage) / 100
-      const waterMass = (weight * 60) / 100 // Assume 60% water content
-      const muscleMass = weight - (fatMass + waterMass) // Remaining as muscle mass
-
-      setBodyComposition({
-        fatMass: fatMass.toFixed(2),
-        waterMass: waterMass.toFixed(2),
-        muscleMass: muscleMass.toFixed(2),
-      })
+      calculateBodyComposition(weight, bmiValue)
     }
   }
 
@@ -93,6 +116,12 @@ const Page = () => {
         <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
           Body Composition Calculator
         </h1>
+        
+        {profileData && (
+          <div className="mb-6 p-4 bg-blue-50 rounded-xl">
+            <p className="text-blue-700">Using data from your profile</p>
+          </div>
+        )}
 
         <form onSubmit={calculateComposition} className="space-y-8">
           <div className="grid md:grid-cols-2 gap-6">

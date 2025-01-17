@@ -35,6 +35,14 @@ export default function Home() {
         <h1 className="text-2xl font-bold text-blue-600">FitTrack</h1>
         <ul className="flex space-x-6">
           <li>
+          <a
+              href="/food"
+              className={`${
+                darkMode ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-blue-600"
+              } font-medium`}
+            >
+              food
+            </a>
             <a
               href="/BMI"
               className={`${

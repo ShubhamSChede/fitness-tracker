@@ -12,8 +12,15 @@ export default function Home() {
 
   useEffect(() => {
     const fetchWorkoutData = async () => {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        setError('User not logged in');
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const response = await fetch('https://irix.onrender.com/api/workout/678a165d5ea4e10812a9e603');
+        const response = await fetch(`https://irix.onrender.com/api/workout/${userId}`);
         if (!response.ok) throw new Error('Failed to fetch workout data');
         const data = await response.json();
         setWorkoutData(data);

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,6 +22,35 @@ ChartJS.register(
 );
 
 export default function ActivityChart() {
+  const [workoutData, setWorkoutData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchWorkoutData = async () => {
+      try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          throw new Error('User not authenticated');
+        }
+        
+        const response = await fetch(`https://irix.onrender.com/api/workout/${userId}`);
+        if (!response.ok) throw new Error('Failed to fetch workout data');
+        const data = await response.json();
+        setWorkoutData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWorkoutData();
+  }, []);
+
+  if (isLoading) return <div className="bg-white p-6 rounded-xl shadow-sm">Loading...</div>;
+  if (error) return <div className="bg-white p-6 rounded-xl shadow-sm text-red-500">{error}</div>;
+
   const options = {
     responsive: true,
     plugins: {
@@ -40,12 +70,12 @@ export default function ActivityChart() {
     datasets: [
       {
         label: 'Steps',
-        data: [6500, 5900, 8000, 8100, 7200, 9000, 7234],
+        data: workoutData.map(day => day.steps) || [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: 'rgba(59, 130, 246, 0.5)',
       },
       {
         label: 'Calories',
-        data: [1200, 1100, 1400, 1350, 1200, 1500, 1248],
+        data: workoutData.map(day => day.calories) || [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: 'rgba(249, 115, 22, 0.5)',
       },
     ],

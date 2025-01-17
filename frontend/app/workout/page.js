@@ -1,9 +1,10 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const Page = () => {
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(null);
   const [formData, setFormData] = useState({
     date: '',
     steps: '',
@@ -14,13 +15,26 @@ const Page = () => {
     note: ''
   });
 
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
+    if (!userId) {
+      alert('User not logged in');
+      setLoading(false);
+      return;
+    }
+    
     try {
       const workoutData = {
-        userId: "678a165d5ea4e10812a9e603", // You might want to get this from your auth system
+        userId: userId,
         date: new Date(formData.date).toISOString(),
         steps: parseInt(formData.steps),
         exercises: [{
@@ -33,7 +47,7 @@ const Page = () => {
       };
 
       const response = await axios.post(
-        'https://irix.onrender.com/api/workout/678a165d5ea4e10812a9e603',
+        `https://irix.onrender.com/api/workout/${userId}`,
         workoutData
       );
       

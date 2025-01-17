@@ -1,7 +1,17 @@
 import Image from "next/image";
 import ActivityChart from "../components/ActivityChart";
+import Badge from "../components/Badge";
 
 export default function Home() {
+  const dailySteps = 7234;  // This could come from your data source
+
+  const getBadgeType = (steps) => {
+    if (steps >= 15000) return 'advanced';
+    if (steps >= 10000) return 'intermediate';
+    if (steps >= 5000) return 'beginner';
+    return null;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       <nav className="bg-white shadow-sm p-4 flex justify-between items-center">
@@ -22,9 +32,14 @@ export default function Home() {
           <div className="bg-white p-6 rounded-xl shadow-sm">
             <h2 className="font-semibold text-gray-700 mb-4">Daily Goals</h2>
             <div className="flex items-center justify-between">
-              <div className="text-3xl font-bold text-blue-500">7,234</div>
+              <div className="text-3xl font-bold text-blue-500">{dailySteps}</div>
               <p className="text-gray-600">steps today</p>
             </div>
+            {getBadgeType(dailySteps) && (
+              <div className="mt-4">
+                <Badge type={getBadgeType(dailySteps)} count={dailySteps} />
+              </div>
+            )}
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-sm">

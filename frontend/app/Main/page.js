@@ -36,6 +36,14 @@ export default function Home() {
         <ul className="flex space-x-6">
           <li>
           <a
+              href="/profile"
+              className={`${
+                darkMode ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-blue-600"
+              } font-medium`}
+            >
+              profile
+            </a>
+          <a
               href="/food"
               className={`${
                 darkMode ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-blue-600"

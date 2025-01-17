@@ -1,19 +1,33 @@
 'use client'
 import React, { useState } from 'react'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 const LoginPage = () => {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log('Form submitted:', formData)
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      const response = await axios.post('https://irix.onrender.com/api/auth/login', formData)
+      console.log('Login successful:', response.data)
+      router.push('/Main')
+    } catch (err) {
+      setError(err.response?.data?.message || 'An error occurred during login')
+      console.error('Login error:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
-
-  
 
   const handleChange = (e) => {
     setFormData({
@@ -26,6 +40,11 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -59,9 +78,10 @@ const LoginPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300"
+            disabled={isLoading}
           >
-            Sign In
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
         

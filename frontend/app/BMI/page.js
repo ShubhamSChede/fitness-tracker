@@ -75,64 +75,104 @@ const Page = () => {
     : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Body Composition Calculator</h1>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 flex flex-col items-center justify-center p-6">
+      <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-4xl border border-gray-100">
+        <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+          Body Composition Calculator
+        </h1>
 
-        <form onSubmit={calculateComposition} className="space-y-6">
-          <div>
-            <label className="block mb-2 text-gray-700 font-medium">Weight (kg)</label>
-            <input
-              type="number"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              placeholder="Enter weight in kg"
-              required
-            />
-          </div>
+        <form onSubmit={calculateComposition} className="space-y-8">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-gray-700 font-semibold">Weight (kg)</label>
+              <input
+                type="number"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 bg-gray-50/50"
+                placeholder="Enter weight in kg"
+                required
+              />
+            </div>
 
-          <div>
-            <label className="block mb-2 text-gray-700 font-medium">Height (cm)</label>
-            <input
-              type="number"
-              value={height}
-              onChange={(e) => setHeight(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              placeholder="Enter height in cm"
-              required
-            />
+            <div className="space-y-2">
+              <label className="block text-gray-700 font-semibold">Height (cm)</label>
+              <input
+                type="number"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+                className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 bg-gray-50/50"
+                placeholder="Enter height in cm"
+                required
+              />
+            </div>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transform hover:scale-105 transition"
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-xl hover:from-blue-600 hover:to-purple-600 transform hover:scale-[1.02] transition-all duration-300 font-semibold shadow-lg"
           >
             Calculate Composition
           </button>
         </form>
 
         {bmi && bodyComposition && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Body Composition</h2>
-            <p className="text-lg text-gray-600 mb-4">BMI: {bmi}</p>
-            <div className="flex flex-col items-center">
-              <div className="w-full max-w-md">
-                <Pie
-                  data={chartData}
-                  options={{
-                    plugins: {
-                      legend: {
-                        position: 'bottom',
+          <div className="mt-12 animate-fadeIn">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Your Body Composition</h2>
+            <div className="bg-white/50 rounded-xl p-6 shadow-lg border border-gray-100">
+              <p className="text-xl text-gray-700 mb-6 text-center font-medium">
+                BMI: <span className="text-purple-600 font-bold">{bmi}</span>
+              </p>
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="w-full md:w-1/2">
+                  <Pie
+                    data={{
+                      ...chartData,
+                      datasets: [{
+                        ...chartData.datasets[0],
+                        backgroundColor: [
+                          'rgba(244, 63, 94, 0.8)', // Fat - rose
+                          'rgba(59, 130, 246, 0.8)', // Water - blue
+                          'rgba(168, 85, 247, 0.8)', // Muscle - purple
+                        ],
+                        borderColor: [
+                          'rgba(244, 63, 94, 1)',
+                          'rgba(59, 130, 246, 1)',
+                          'rgba(168, 85, 247, 1)',
+                        ],
+                        borderWidth: 2,
+                      }],
+                    }}
+                    options={{
+                      plugins: {
+                        legend: {
+                          position: 'bottom',
+                          labels: {
+                            font: {
+                              size: 14,
+                              weight: 'bold',
+                            },
+                            padding: 20,
+                          },
+                        },
                       },
-                    },
-                  }}
-                />
-              </div>
-              <div className="mt-4 text-sm text-gray-600">
-                <p>• Fat Mass: {bodyComposition.fatMass} kg</p>
-                <p>• Water Mass: {bodyComposition.waterMass} kg</p>
-                <p>• Muscle Mass: {bodyComposition.muscleMass} kg</p>
+                    }}
+                  />
+                </div>
+                <div className="w-full md:w-1/2 space-y-4 text-base text-gray-700">
+                  <p className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-rose-500"></span>
+                    Fat Mass: <span className="font-bold">{bodyComposition.fatMass} kg</span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-blue-500"></span>
+                    Water Mass: <span className="font-bold">{bodyComposition.waterMass} kg</span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-purple-500"></span>
+                    Muscle Mass: <span className="font-bold">{bodyComposition.muscleMass} kg</span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>

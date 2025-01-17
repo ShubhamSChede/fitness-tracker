@@ -73,11 +73,7 @@ export default function ActivityChart() {
         data: workoutData.map(day => day.steps) || [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: 'rgba(59, 130, 246, 0.5)',
       },
-      {
-        label: 'Calories',
-        data: workoutData.map(day => day.calories) || [0, 0, 0, 0, 0, 0, 0],
-        backgroundColor: 'rgba(249, 115, 22, 0.5)',
-      },
+      
     ],
   };
 

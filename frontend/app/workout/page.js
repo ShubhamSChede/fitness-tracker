@@ -1,7 +1,9 @@
 'use client'
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const Page = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     date: '',
     steps: '',
@@ -12,10 +14,46 @@ const Page = () => {
     note: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Handle form submission here
+    setLoading(true);
+    
+    try {
+      const workoutData = {
+        userId: "678a165d5ea4e10812a9e603", // You might want to get this from your auth system
+        date: new Date(formData.date).toISOString(),
+        steps: parseInt(formData.steps),
+        exercises: [{
+          type: formData.exerciseType,
+          duration: parseInt(formData.duration),
+          exercise_name: formData.exerciseName,
+          calories: parseInt(formData.calories),
+          note: formData.note
+        }]
+      };
+
+      const response = await axios.post(
+        'https://irix.onrender.com/api/workout/678a165d5ea4e10812a9e603',
+        workoutData
+      );
+      
+      console.log('Workout logged:', response.data);
+      // Reset form
+      setFormData({
+        date: '',
+        steps: '',
+        exerciseType: '',
+        duration: '',
+        exerciseName: '',
+        calories: '',
+        note: ''
+      });
+    } catch (error) {
+      console.error('Error logging workout:', error);
+      alert('Failed to log workout');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -109,9 +147,10 @@ const Page = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-blue-300"
+          disabled={loading}
         >
-          Log Workout
+          {loading ? 'Logging...' : 'Log Workout'}
         </button>
       </form>
     </div>

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Pie } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -19,6 +19,18 @@ const Page = () => {
   const [height, setHeight] = useState('')
   const [bmi, setBmi] = useState('')
   const [bodyComposition, setBodyComposition] = useState(null)
+  
+  useEffect(() => {
+    // Load previous BMI on component mount
+    const storedBMI = localStorage.getItem('lastBMI')
+    if (storedBMI) {
+      setBmi(storedBMI)
+    }
+  }, [])
+
+  const saveBMIToStorage = (bmiValue) => {
+    localStorage.setItem('lastBMI', bmiValue)
+  }
 
   const calculateComposition = (e) => {
     e.preventDefault()
@@ -26,6 +38,7 @@ const Page = () => {
       const heightInMeters = height / 100
       const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2)
       setBmi(bmiValue)
+      saveBMIToStorage(bmiValue)
 
       // Estimate body composition (generalized)
       const bodyFatPercentage = bmiValue < 18.5

@@ -20,6 +20,8 @@ const LoginPage = () => {
     try {
       const response = await axios.post('https://irix.onrender.com/api/auth/login', formData)
       console.log('Login successful:', response.data)
+      // Store user ID from the new response structure
+      localStorage.setItem('userId', response.data.userId)
       router.push('/Main')
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during login')

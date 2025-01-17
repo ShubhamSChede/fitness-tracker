@@ -1,25 +1,30 @@
 'use client';
 import React, { useState } from 'react';
 import { Plus, Trash2, UtensilsCrossed } from 'lucide-react';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const FoodCalculator = () => {
   const [foods, setFoods] = useState([]);
   const [foodItem, setFoodItem] = useState('');
   const [calories, setCalories] = useState('');
   const [portion, setPortion] = useState('');
+  const [protein, setProtein] = useState('');
   const [error, setError] = useState('');
 
   const handleAddFood = (e) => {
     e.preventDefault();
     setError('');
 
-    if (!foodItem.trim() || !calories || !portion) {
+    if (!foodItem.trim() || !calories || !portion || !protein) {
       setError('Please fill in all fields');
       return;
     }
 
-    if (calories <= 0 || portion <= 0) {
-      setError('Calories and portion must be positive numbers');
+    if (calories <= 0 || portion <= 0 || protein < 0) {
+      setError('Values must be positive numbers');
       return;
     }
 
@@ -27,12 +32,15 @@ const FoodCalculator = () => {
       name: foodItem.trim(),
       calories: parseInt(calories),
       portion: parseInt(portion),
-      totalCalories: (parseInt(calories) * parseInt(portion)) / 100
+      protein: parseInt(protein),
+      totalCalories: (parseInt(calories) * parseInt(portion)) / 100,
+      totalProtein: (parseInt(protein) * parseInt(portion)) / 100
     }]);
     
     setFoodItem('');
     setCalories('');
     setPortion('');
+    setProtein('');
   };
 
   const handleRemoveFood = (index) => {
@@ -40,6 +48,35 @@ const FoodCalculator = () => {
   };
 
   const totalCalories = foods.reduce((acc, food) => acc + food.totalCalories, 0);
+  const totalProtein = foods.reduce((acc, food) => acc + food.totalProtein, 0);
+
+  const chartData = {
+    labels: foods.map(food => food.name),
+    datasets: [{
+      data: foods.map(food => food.totalProtein),
+      backgroundColor: [
+        '#FF6384',
+        '#36A2EB',
+        '#FFCE56',
+        '#4BC0C0',
+        '#9966FF',
+        '#FF9F40'
+      ],
+      borderWidth: 1
+    }]
+  };
+
+  const chartOptions = {
+    plugins: {
+      legend: {
+        position: 'bottom'
+      },
+      title: {
+        display: true,
+        text: 'Protein Distribution (g)'
+      }
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
@@ -54,12 +91,19 @@ const FoodCalculator = () => {
           className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <input
             type="number"
             placeholder="Calories per 100g"
             value={calories}
             onChange={(e) => setCalories(e.target.value)}
+            className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <input
+            type="number"
+            placeholder="Protein per 100g"
+            value={protein}
+            onChange={(e) => setProtein(e.target.value)}
             className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <input
@@ -85,6 +129,17 @@ const FoodCalculator = () => {
           Add Food
         </button>
       </form>
+
+      {foods.length > 0 && (
+        <div className="mb-8">
+          <div className="w-64 mx-auto">
+            <Doughnut data={chartData} options={chartOptions} />
+          </div>
+          <div className="text-center mt-4">
+            <p className="font-semibold">Total Protein: {totalProtein.toFixed(1)}g</p>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">Added Foods</h2>

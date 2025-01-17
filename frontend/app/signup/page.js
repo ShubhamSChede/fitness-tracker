@@ -4,15 +4,36 @@ import Link from 'next/link'
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   })
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Add your signup logic here
-    console.log('Form submitted:', formData)
+    setError('')
+    
+    try {
+      const response = await fetch('https://irix.onrender.com/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+      
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed')
+      }
+      
+      // Redirect to login page on success
+      window.location.href = '/'
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
   const handleChange = (e) => {
@@ -30,8 +51,24 @@ const SignupPage = () => {
             Create your account
           </h2>
         </div>
+        {error && (
+          <div className="text-red-500 text-center text-sm">
+            {error}
+          </div>
+        )}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
+            <div>
+              <input
+                type="text"
+                name="name"
+                required
+                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Full name"
+                value={formData.name}
+                onChange={handleChange}
+              />
+            </div>
             <div>
               <input
                 type="email"
@@ -51,17 +88,6 @@ const SignupPage = () => {
                 className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Password"
                 value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                name="confirmPassword"
-                required
-                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
                 onChange={handleChange}
               />
             </div>

@@ -4,9 +4,17 @@ import ActivityChart from "../components/ActivityChart";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
-      <nav className="bg-white shadow-sm p-4">
-        <h1 className="text-2xl font-bold text-blue-600">FitTrack</h1>
-      </nav>
+      <nav className="bg-white shadow-sm p-4 flex justify-between items-center">
+  <h1 className="text-2xl font-bold text-blue-600">FitTrack</h1>
+  <ul className="flex space-x-6">
+    <li>
+      <a href="/BMI" className="text-gray-600 hover:text-blue-600 font-medium">
+        BMI Calculator
+      </a>
+    </li>
+    
+  </ul>
+</nav>
       
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

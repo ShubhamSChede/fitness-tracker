@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -26,6 +26,19 @@ const SleepPage = () => {
   const [sleepData, setSleepData] = useState([]);
   const [date, setDate] = useState('');
   const [hours, setHours] = useState('');
+
+  useEffect(() => {
+    // Load initial data from localStorage
+    const savedData = localStorage.getItem('sleepData');
+    if (savedData) {
+      setSleepData(JSON.parse(savedData));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save to localStorage whenever sleepData changes
+    localStorage.setItem('sleepData', JSON.stringify(sleepData));
+  }, [sleepData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

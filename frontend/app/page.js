@@ -20,7 +20,7 @@ export default function Home() {
           xmlns="http://www.w3.org/2000/svg"
         >
           <circle cx="100" cy="100" r="90" fill="#2563eb"/> {/* Changed to blue-600 */}
-          <g transform="translate(50, 80)">
+          <g transform="translate(50, 50)">
             <rect x="0" y="10" width="20" height="40" rx="5" fill="white" opacity="0.9"/>
             <rect x="20" y="25" width="60" height="10" rx="2" fill="white" opacity="0.9"/>
             <rect x="80" y="10" width="20" height="40" rx="5" fill="white" opacity="0.9"/>
@@ -28,9 +28,9 @@ export default function Home() {
           <path 
             d="M40 140 L70 140 L85 110 L100 160 L115 120 L130 140 L160 140" 
             stroke="white" 
-            stroke-width="6" 
+            strokeWidth="6" 
             fill="none" 
-            stroke-linecap="round"
+            strokeLinecap="round"
             opacity="0.9"
           />
         </svg>

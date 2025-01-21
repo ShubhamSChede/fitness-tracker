@@ -1,3 +1,5 @@
+
+import { DarkModeProvider } from './context/DarkModeContext';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -19,11 +21,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <DarkModeProvider>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
+      </DarkModeProvider>
     </html>
   );
 }

@@ -13,6 +13,9 @@ import {
 } from 'chart.js';
 import { format, subDays } from 'date-fns';
 import Navbar from '../components/Navbar';
+import { useDarkMode } from '../context/DarkModeContext';
+import Footer from '../components/Footer'
+
 
 ChartJS.register(
   CategoryScale,
@@ -31,7 +34,7 @@ export default function SleepTracker() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [userId, setUserId] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode } = useDarkMode();
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -186,10 +189,6 @@ export default function SleepTracker() {
     return (total / sleepData.length).toFixed(1);
   };
 
-  //toggle dark mode
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  }
 
   return (
         <div
@@ -199,17 +198,17 @@ export default function SleepTracker() {
               : "bg-gradient-to-br from-blue-50 to-blue-100"
           }`}
         >
-          <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
+          <Navbar/>
       <div className="max-w-4xl mx-auto mt-10 space-y-8">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h1 className="text-2xl font-bold mb-6 text-gray-800">Sleep Tracker</h1>
+        <div className=" p-6 rounded-lg shadow-lg">
+          <h1 className="text-2xl font-bold mb-6 ">Sleep Tracker</h1>
           
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="text-blue-500 border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
             <input
@@ -225,7 +224,7 @@ export default function SleepTracker() {
             />
             <button 
               type="submit"
-              className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="bg-blue-500  px-6 py-2 rounded hover:bg-blue-600 transition-colors duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Add Record
             </button>
@@ -249,17 +248,17 @@ export default function SleepTracker() {
           )}
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-bold mb-4 text-gray-800">Weekly Summary</h2>
+        <div className=" p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-bold mb-4 ">Weekly Summary</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-600 mb-1">Average Sleep</p>
+            <div className=" p-4 rounded-lg">
+              <p className=" mb-1">Average Sleep</p>
               <p className="text-3xl font-bold text-blue-600">
                 {calculateAverageSleep()} <span className="text-lg">hours</span>
               </p>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-600 mb-1">Total Records</p>
+            <div className="p-4 rounded-lg">
+              <p className=" mb-1">Total Records</p>
               <p className="text-3xl font-bold text-blue-600">
                 {sleepData.length}
               </p>
@@ -268,13 +267,13 @@ export default function SleepTracker() {
           
           {sleepData.length > 0 && (
             <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-3 text-gray-700">Recent Records</h3>
+              <h3 className="text-lg font-semibold mb-3 ">Recent Records</h3>
               <div className="overflow-x-auto">
                 <table className="min-w-full table-auto">
                   <thead>
-                    <tr className="bg-gray-50">
-                      <th className="px-4 py-2 text-left text-gray-600">Date</th>
-                      <th className="px-4 py-2 text-left text-gray-600">Hours</th>
+                    <tr className="">
+                      <th className="px-4 py-2 text-left ">Date</th>
+                      <th className="px-4 py-2 text-left ">Hours</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -283,10 +282,10 @@ export default function SleepTracker() {
                       .slice(0, 5)
                       .map((record, index) => (
                         <tr key={index} className="border-t">
-                          <td className="px-4 py-2 text-gray-800">
+                          <td className="px-4 py-2 ">
                             {format(new Date(record.date), 'MMM dd, yyyy')}
                           </td>
-                          <td className="px-4 py-2 text-gray-800">
+                          <td className="px-4 py-2 ">
                             {record.hoursOfSleep} hours
                           </td>
                         </tr>
@@ -298,6 +297,7 @@ export default function SleepTracker() {
           )}
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

@@ -4,6 +4,9 @@ import { Plus, Trash2, UtensilsCrossed } from 'lucide-react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import Navbar from '../components/Navbar';
+import { useDarkMode } from '../context/DarkModeContext';
+import Footer from '../components/Footer'
+
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -14,7 +17,7 @@ const FoodCalculator = () => {
   const [portion, setPortion] = useState('');
   const [protein, setProtein] = useState('');
   const [error, setError] = useState('');
-    const [darkMode, setDarkMode] = useState(false);
+  const { darkMode } = useDarkMode();
 
   const handleAddFood = (e) => {
     e.preventDefault();
@@ -80,16 +83,12 @@ const FoodCalculator = () => {
     }
   };
 
-  const toggleDarkMode = () => {
-    setDarkMode((prevMode) => !prevMode);
-  };
-
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gradient-to-br from-blue-50 to-blue-100'}`}>
-    <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
-    <div className="max-w-2xl mx-auto p-6 mt-10 bg-white rounded-lg shadow">
+    <Navbar/>
+    <div className="max-w-2xl mx-auto p-6 mt-10 rounded-lg shadow">
 
-      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Food Calorie Calculator</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Food Calorie Calculator</h1>
       
       <form onSubmit={handleAddFood} className="space-y-4 mb-8">
         <input
@@ -97,7 +96,7 @@ const FoodCalculator = () => {
           placeholder="Food item (e.g., Banana, Apple, Rice)"
           value={foodItem}
           onChange={(e) => setFoodItem(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full p-3 border  text-black border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         
         <div className="grid grid-cols-3 gap-4">
@@ -106,21 +105,21 @@ const FoodCalculator = () => {
             placeholder="Calories per 100g"
             value={calories}
             onChange={(e) => setCalories(e.target.value)}
-            className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="p-3 border text-black border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <input
             type="number"
             placeholder="Protein per 100g"
             value={protein}
             onChange={(e) => setProtein(e.target.value)}
-            className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="p-3 border  text-black border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <input
             type="number"
             placeholder="Portion (g)"
             value={portion}
             onChange={(e) => setPortion(e.target.value)}
-            className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="p-3 border  text-black border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
@@ -151,10 +150,10 @@ const FoodCalculator = () => {
       )}
 
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">Added Foods</h2>
+        <h2 className="text-xl font-semibold ">Added Foods</h2>
         
         {foods.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 ">
             <UtensilsCrossed className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p>No foods added yet. Start by adding some foods above!</p>
           </div>
@@ -163,11 +162,11 @@ const FoodCalculator = () => {
             {foods.map((food, index) => (
               <div 
                 key={index} 
-                className="flex items-center justify-between p-4 bg-gray-50 rounded hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-between p-4  rounded hover:bg-gray-100 transition-colors"
               >
                 <div>
                   <span className="font-medium">{food.name}</span>
-                  <span className="text-gray-500 text-sm ml-2">({food.portion}g)</span>
+                  <span className="text-sm ml-2">({food.portion}g)</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="font-medium">{food.totalCalories.toFixed(1)} kcal</span>
@@ -181,8 +180,8 @@ const FoodCalculator = () => {
               </div>
             ))}
 
-            <div className="mt-6 p-4 bg-blue-50 rounded flex justify-between items-center">
-              <span className="font-semibold text-gray-800">Total Calories</span>
+            <div className="mt-6 p-4  rounded flex justify-between items-center">
+              <span className="font-semibold ">Total Calories</span>
               <span className="text-xl font-bold text-blue-600">
                 {totalCalories.toFixed(1)} kcal
               </span>
@@ -191,6 +190,7 @@ const FoodCalculator = () => {
         )}
       </div>
     </div>
+    <Footer/>
   </div>
 
   );

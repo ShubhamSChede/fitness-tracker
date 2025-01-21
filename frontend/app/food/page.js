@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Plus, Trash2, UtensilsCrossed } from 'lucide-react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import Navbar from '../components/Navbar';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -13,6 +14,7 @@ const FoodCalculator = () => {
   const [portion, setPortion] = useState('');
   const [protein, setProtein] = useState('');
   const [error, setError] = useState('');
+    const [darkMode, setDarkMode] = useState(false);
 
   const handleAddFood = (e) => {
     e.preventDefault();
@@ -78,8 +80,15 @@ const FoodCalculator = () => {
     }
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
+
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gradient-to-br from-blue-50 to-blue-100'}`}>
+    <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
+    <div className="max-w-2xl mx-auto p-6 mt-10 bg-white rounded-lg shadow">
+
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Food Calorie Calculator</h1>
       
       <form onSubmit={handleAddFood} className="space-y-4 mb-8">
@@ -182,6 +191,8 @@ const FoodCalculator = () => {
         )}
       </div>
     </div>
+  </div>
+
   );
 };
 

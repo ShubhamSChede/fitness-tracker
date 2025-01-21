@@ -1,9 +1,11 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+import Navbar from "../components/Navbar";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -47,6 +49,10 @@ const Profile = () => {
   const handleEdit = () => {
     setEditedProfile({ ...profile });
     setIsEditing(true);
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
   };
 
   const handleSave = async () => {
@@ -98,76 +104,98 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Profile Information</h1>
-          {!isEditing ? (
-            <button
-              onClick={handleEdit}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Edit Profile
-            </button>
-          ) : (
-            <button
-              onClick={handleSave}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-              Save Changes
-            </button>
+        <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gradient-to-br from-blue-50 to-blue-100'}`}>
+        <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
+      <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8 space-y-8 backdrop-blur-sm bg-white/90">
+          <div className="flex items-center justify-between border-b border-gray-200 pb-6">
+            <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
+            {!isEditing ? (
+              <button
+                onClick={handleEdit}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-lg transition-colors duration-200 flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                Edit Profile
+              </button>
+            ) : (
+              <button
+                onClick={handleSave}
+                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg transition-colors duration-200 flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Save Changes
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6 p-6 bg-gray-50 rounded-xl">
+              <ProfileField 
+                label="Age" 
+                value={isEditing ? editedProfile.age : profile.age}
+                suffix="years"
+                editable={isEditing}
+                onChange={(value) => handleChange('age', value)}
+                className="bg-white border-gray-200"
+              />
+              <ProfileField 
+                label="Gender" 
+                value={isEditing ? editedProfile.gender : profile.gender}
+                editable={isEditing}
+                onChange={(value) => handleChange('gender', value)}
+                className="bg-white border-gray-200"
+              />
+            </div>
+
+            <div className="space-y-6 p-6 bg-gray-50 rounded-xl">
+              <ProfileField 
+                label="Height" 
+                value={isEditing ? editedProfile.height : profile.height}
+                suffix="cm"
+                editable={isEditing}
+                onChange={(value) => handleChange('height', value)}
+                className="bg-white border-gray-200"
+              />
+              <ProfileField 
+                label="Weight" 
+                value={isEditing ? editedProfile.weight : profile.weight}
+                suffix="kg"
+                editable={isEditing}
+                onChange={(value) => handleChange('weight', value)}
+                className="bg-white border-gray-200"
+              />
+            </div>
+          </div>
+
+          {isEditing && (
+            <div className="flex justify-end pt-6 border-t border-gray-200">
+              <button
+                onClick={() => setIsEditing(false)}
+                className="mr-4 px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="px-6 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
+              >
+                Save Changes
+              </button>
+            </div>
           )}
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ProfileField 
-            label="User ID" 
-            value={profile.userId} 
-            readonly={true}
-          />
-          <ProfileField 
-            label="Age" 
-            value={isEditing ? editedProfile.age : profile.age}
-            suffix="years"
-            editable={isEditing}
-            onChange={(value) => handleChange('age', value)}
-          />
-          <ProfileField 
-            label="Gender" 
-            value={isEditing ? editedProfile.gender : profile.gender}
-            editable={isEditing}
-            onChange={(value) => handleChange('gender', value)}
-          />
-          <ProfileField 
-            label="Height" 
-            value={isEditing ? editedProfile.height : profile.height}
-            suffix="cm"
-            editable={isEditing}
-            onChange={(value) => handleChange('height', value)}
-          />
-          <ProfileField 
-            label="Weight" 
-            value={isEditing ? editedProfile.weight : profile.weight}
-            suffix="kg"
-            editable={isEditing}
-            onChange={(value) => handleChange('weight', value)}
-          />
-          <ProfileField 
-            label="Created At" 
-            value={new Date(profile.createdAt).toLocaleDateString()} 
-          />
-          <ProfileField 
-            label="Updated At" 
-            value={new Date(profile.updatedAt).toLocaleDateString()} 
-          />
         </div>
       </div>
     </div>
   );
 };
 
-const ProfileField = ({ label, value, suffix = '', editable = false, readonly = false, onChange }) => (
-  <div className="bg-gray-50 px-4 py-3 rounded-lg">
+const ProfileField = ({ label, value, suffix = '', editable = false, readonly = false, onChange, className }) => (
+  <div className={`bg-gray-50 px-4 py-3 rounded-lg ${className}`}>
     <p className="text-sm font-medium text-gray-500">{label}</p>
     {editable && !readonly ? (
       <input

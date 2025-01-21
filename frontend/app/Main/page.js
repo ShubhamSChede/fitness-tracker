@@ -1,8 +1,9 @@
 'use client';
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import Navbar from "../components/Navbar";
 import ActivityChart from "../components/ActivityChart";
 import Badge from "../components/Badge";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
@@ -14,7 +15,6 @@ export default function Home() {
     const fetchWorkoutData = async () => {
       const userId = "678a165d5ea4e10812a9e603"; // Static userId for demonstration
       try {
-        // Simulate fetching data
         const data = {
           userId: "678a165d5ea4e10812a9e603",
           date: "2024-01-17T00:00:00.000Z",
@@ -78,86 +78,7 @@ export default function Home() {
           : "bg-gradient-to-br from-blue-50 to-blue-100"
       }`}
     >
-      <nav
-        className={`${
-          darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"
-        } shadow-sm p-4 flex justify-between items-center`}
-      >
-        <h1 className="text-2xl font-bold text-blue-600">FitTrack</h1>
-        <ul className="flex space-x-6">
-          <li>
-            <a
-              href="/profile"
-              className={`${
-                darkMode
-                  ? "text-gray-300 hover:text-white"
-                  : "text-gray-600 hover:text-blue-600"
-              } font-medium`}
-            >
-              Profile
-            </a>
-          </li>
-          <li>
-            <a
-              href="/food"
-              className={`${
-                darkMode
-                  ? "text-gray-300 hover:text-white"
-                  : "text-gray-600 hover:text-blue-600"
-              } font-medium`}
-            >
-              Food
-            </a>
-          </li>
-          <li>
-            <a
-              href="/BMI"
-              className={`${
-                darkMode
-                  ? "text-gray-300 hover:text-white"
-                  : "text-gray-600 hover:text-blue-600"
-              } font-medium`}
-            >
-              BMI Calculator
-            </a>
-          </li>
-          <li>
-            <a
-              href="/workout"
-              className={`${
-                darkMode
-                  ? "text-gray-300 hover:text-white"
-                  : "text-gray-600 hover:text-blue-600"
-              } font-medium`}
-            >
-              Workout
-            </a>
-          </li>
-          <li>
-            <a
-              href="/sleep"
-              className={`${
-                darkMode
-                  ? "text-gray-300 hover:text-white"
-                  : "text-gray-600 hover:text-blue-600"
-              } font-medium`}
-            >
-              Sleep
-            </a>
-          </li>
-        </ul>
-        <button
-          onClick={toggleDarkMode}
-          className={`ml-4 px-4 py-2 rounded-lg ${
-            darkMode
-              ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          } transition`}
-        >
-          {darkMode ? "Light Mode" : "Dark Mode"}
-        </button>
-      </nav>
-
+      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div
@@ -218,6 +139,7 @@ export default function Home() {
           <ActivityChart />
         </div>
       </main>
+      <Footer/>
     </div>
   );
 }

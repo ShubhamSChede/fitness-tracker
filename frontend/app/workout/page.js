@@ -1,9 +1,11 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import Navbar from '../components/Navbar';
 
 const Page = () => {
   const [loading, setLoading] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
   const [userId, setUserId] = useState(null);
   const [formData, setFormData] = useState({
     date: '',
@@ -77,7 +79,14 @@ const Page = () => {
     });
   };
 
+  //toggle dark mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  }
+
   return (
+        <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gradient-to-br from-blue-50 to-blue-100'}`}>
+        <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Log Workout</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -167,6 +176,7 @@ const Page = () => {
           {loading ? 'Logging...' : 'Log Workout'}
         </button>
       </form>
+    </div>
     </div>
   );
 };

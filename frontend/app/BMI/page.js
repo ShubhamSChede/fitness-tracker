@@ -7,6 +7,7 @@ import {
   Tooltip,
   Legend
 } from 'chart.js'
+import Navbar from '../components/Navbar'
 
 ChartJS.register(
   ArcElement,
@@ -14,7 +15,9 @@ ChartJS.register(
   Legend
 )
 
+
 const Page = () => {
+      const [darkMode, setDarkMode] = useState(false);
   const [weight, setWeight] = useState('')
   const [height, setHeight] = useState('')
   const [bmi, setBmi] = useState('')
@@ -48,6 +51,8 @@ const Page = () => {
       setBmi(storedBMI)
     }
   }, [])
+
+
 
   const saveBMIToStorage = (bmiValue) => {
     localStorage.setItem('lastBMI', bmiValue)
@@ -110,8 +115,17 @@ const Page = () => {
       }
     : null
 
+    //toggle
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  }
+
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 flex flex-col items-center justify-center p-6">
+        <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gradient-to-br from-blue-50 to-blue-100'}`}>
+        <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
+    <div className="min-h-screen flex flex-col items-center justify-center p-6">
+
       <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-4xl border border-gray-100">
         <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
           Body Composition Calculator
@@ -221,6 +235,8 @@ const Page = () => {
         )}
       </div>
     </div>
+    </div>
+
   )
 }
 

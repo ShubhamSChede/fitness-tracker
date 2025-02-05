@@ -94,6 +94,18 @@ export default function Navbar() {
               Sleep
             </a>
           </li>
+          <li>
+              <a
+                href="/community"
+                className={`${
+                  darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-blue-600"
+                } font-medium block`}
+              >
+                Community 
+              </a>
+            </li>
         </ul>
 
         <div className="flex items-center space-x-4">
@@ -197,6 +209,18 @@ export default function Navbar() {
                 } font-medium block`}
               >
                 Sleep
+              </a>
+            </li>
+            <li>
+              <a
+                href="/community"
+                className={`${
+                  darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-blue-600"
+                } font-medium block`}
+              >
+                Community
               </a>
             </li>
           </ul>

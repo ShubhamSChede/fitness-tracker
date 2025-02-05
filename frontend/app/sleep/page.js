@@ -16,7 +16,6 @@ import Navbar from '../components/Navbar';
 import { useDarkMode } from '../context/DarkModeContext';
 import Footer from '../components/Footer'
 
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -46,12 +45,6 @@ export default function SleepTracker() {
     fetchSleepData(storedUserId);
   }, []);
 
-  useEffect(() => {
-    if (userId) {
-      fetchSleepData(userId);
-    }
-  }, [userId]);
-
   const fetchSleepData = async (currentUserId) => {
     if (!currentUserId) return;
     
@@ -61,10 +54,7 @@ export default function SleepTracker() {
       const endDate = new Date();
       const startDate = subDays(endDate, 7);
       const response = await fetch(
-        `https://irix.onrender.com/api/sleep?startDate=${format(startDate, 'yyyy-MM-dd')}&endDate=${format(endDate, 'yyyy-MM-dd')}`,
-        {
-          headers: { 'user-id': currentUserId }
-        }
+        `https://irix.onrender.com/api/sleep/${currentUserId}?startDate=${format(startDate, 'yyyy-MM-dd')}&endDate=${format(endDate, 'yyyy-MM-dd')}`
       );
 
       if (!response.ok) {
@@ -76,7 +66,7 @@ export default function SleepTracker() {
       setSleepData(data);
     } catch (err) {
       setError(err.message);
-      setSleepData([]); // Clear data on error
+      setSleepData([]);
     } finally {
       setLoading(false);
     }
@@ -97,10 +87,9 @@ export default function SleepTracker() {
 
     try {
       setError('');
-      const response = await fetch(`https://irix.onrender.com/api/sleep`, {
+      const response = await fetch(`https://irix.onrender.com/api/sleep/${userId}`, {
         method: 'POST',
         headers: {
-          'user-id': userId,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ date, hoursOfSleep: hoursNum })
@@ -113,8 +102,6 @@ export default function SleepTracker() {
 
       await fetchSleepData(userId);
       setHours('');
-      // Optional: Show success message
-      // setSuccessMessage('Sleep record added successfully');
     } catch (err) {
       setError(err.message);
     }
